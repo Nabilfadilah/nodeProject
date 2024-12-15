@@ -1,15 +1,14 @@
 const mysql = require("mysql");
- 
+
 const db = mysql.createPool({
-    socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock',
-    connectionLimit: 10,
-    host: "localhost",
-    user: "root",
-    password: "root",
-    database: "nodeexpressDB"
+    connectionLimit: 10, // Jumlah koneksi maksimum
+    host: "localhost", // Host default XAMPP
+    user: "root", // Username default XAMPP
+    password: "", // Password default XAMPP (kosong)
+    database: "nodeexpressDB", // Nama database Anda
 });
- 
-// Ping database to check for common exception errors.
+
+// Ping database untuk mengecek error umum
 db.getConnection((err, connection) => {
     if (err) {
         if (err.code === 'PROTOCOL_CONNECTION_LOST') {
@@ -22,10 +21,19 @@ db.getConnection((err, connection) => {
             console.error('Database connection was refused.');
         }
     }
-  
+
     if (connection) connection.release();
-  
+
     return;
 });
- 
+
+// cek apakah database terkoneksi?
+db.query('SELECT 1', (err, results) => {
+    if (err) {
+        console.error('Error connecting to the database:', err.message);
+    } else {
+        console.log('Database connected successfully!');
+    }
+});
+
 module.exports = db;
